@@ -1,0 +1,75 @@
+<div class="tname"><h1>Quiz Dhamaka</h1></div>
+<div *ngIf='st==0' class="container">
+  <h1>Welcome to Quiz Dhamaka</h1>
+  <h2>Instruction:</h2>
+  <p>For Every Quiz Round There Are Five Quiz Questions</p>
+  <p>For Every Right Answer You Gain +1000 Score</p>
+  <p>For Any Wrong Answer Quiz Will End</p>
+  <p>If Answer All Questions Of Quiz Round Right You Win</p>
+  <p>There Are Two Lifelines For Help</p>
+  <p>Fifty-Fifty lifeline Remove Two Wrong Option</p>
+  <p>Ask The Expert lifeline Gives Expert Advice For The Question</p>
+  <p>For Every Quiz Round You Can Use Each Lifeline Only Once</p>
+  <button (click)='s()'>Start Quiz</button>
+</div>
+<div *ngIf='st==1' class="container">
+    <div id="questions" *ngIf='questions.length >0 && num < questions.length && wr==0;
+        else elseBlock;'>
+        <h2>Current Score: {{points}}</h2>
+        <h2 [innerHtml]='questions[num].question'></h2>
+
+        <ng-container [ngSwitch]="true">
+
+            <div *ngSwitchCase="ff === 1 && ex!==1">
+                <ul><li *ngFor='let op of questions[num].incorrect_answers'>
+                <button [innerHtml]='op' 
+                (click)='checkAnswer(questions[num].correct_answer,op)' ></button></li>
+                </ul>
+            </div>
+
+            <div *ngSwitchCase="ex === 1"><div class="clearfix">
+                <div class="person"></div>
+              <h1>Expert Advice:<p [innerHtml]='questions[num].correct_answer'></p></h1>
+              </div>
+              <ul><li *ngFor='let op of questions[num].incorrect_answers'>
+                <button [innerHtml]='op' 
+                (click)='checkAnswer(questions[num].correct_answer,op)' ></button></li>
+              </ul>
+            </div>
+
+
+            <div *ngSwitchDefault><ul><li *ngFor='let op of questions[num].incorrect_answers'>
+                <button [innerHtml]='op' 
+                (click)='checkAnswer(questions[num].correct_answer,op)' ></button>
+            </li></ul></div>
+
+        </ng-container>
+
+
+    </div>
+    <ng-template loading='eager' #elseBlock>
+        <h2><strong>SCORE: {{points}}</strong></h2>
+        <div *ngIf='wr==0 && lo==1' class="success">
+          <audio autoplay>
+            <source src="../../assets/win.wav">
+          </audio>
+          <h1><strong>CONGRATULATIONS!!!</strong></h1>
+          <h1><strong>Hard Work Always Pays Off</strong></h1>
+        </div>
+        <div *ngIf='wr==1 && lo==1' class="fail">
+          <audio autoplay>
+            <source src="../../assets/loss.wav">
+          </audio>
+          <h1><strong>GAME OVER</strong></h1>
+        </div>
+      <ul>
+        <li><button (click)='m()'>Start Menu</button></li>
+        <li><button (click)='start()'>Restart Quiz</button></li>
+      </ul>
+    </ng-template>
+  </div>
+<div *ngIf='life==0 && questions.length >0 && num < questions.length && st==1' class="lifeline">
+    <h2>Lifelines</h2>
+    <button [disabled]='df===1' class='new' (click)='fifty()'>Fifty-Fifty</button>
+    <button [disabled]='de===1' class='new' (click)='expert()'>Ask the Expert</button>
+</div>
